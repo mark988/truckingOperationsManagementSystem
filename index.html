@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOMS · 登录 / Sign In</title>
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>🚛</text></svg>">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-brand">
+      <div class="brand-inner">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 17h2.2c.4 1.7 1.9 3 3.8 3s3.4-1.3 3.8-3h4.4c.4 1.7 1.9 3 3.8 3s3.4-1.3 3.8-3H22V9.5L18.5 5H14V3H3v14zm15-9.5h.6L20.5 9H18V7.5zM15 17a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM9 17a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+        </svg>
+        <h1 data-i18n="login.brand.title">TOMS</h1>
+        <p style="font-size:1.05rem; margin-bottom:1rem;" data-i18n="login.brand.subtitle">Trucking Operations Management System</p>
+        <p style="font-size:0.9rem; opacity:0.7;" data-i18n="login.brand.description">A lightweight fleet ops platform.</p>
+      </div>
+    </div>
+    <div class="login-form-wrap" style="position:relative;">
+      <div class="login-lang-switcher">
+        <div class="lang-switcher">
+          <button type="button" class="lang-btn" data-lang="zh-CN">中</button>
+          <button type="button" class="lang-btn" data-lang="en-US">EN</button>
+        </div>
+      </div>
+      <div class="login-card">
+        <h2 data-i18n="login.welcome">Welcome back</h2>
+        <p class="subtitle" data-i18n="login.subtitle">Please sign in to continue.</p>
+
+        <form id="loginForm" class="needs-validation" novalidate>
+          <div class="mb-3">
+            <label for="username" class="form-label" data-i18n="login.field.username">Username</label>
+            <input type="text" class="form-control" id="username" required autocomplete="username">
+            <div class="invalid-feedback" data-i18n="login.invalid.username">Username required</div>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label" data-i18n="login.field.password">Password</label>
+            <input type="password" class="form-control" id="password" required autocomplete="current-password">
+            <div class="invalid-feedback" data-i18n="login.invalid.password">Password required</div>
+          </div>
+          <div class="mb-3 d-flex justify-content-between align-items-center">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="remember">
+              <label class="form-check-label" for="remember" data-i18n="login.field.remember">Remember me</label>
+            </div>
+            <a href="#" class="text-decoration-none small" data-i18n="login.field.forgot">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 mb-3" data-i18n="login.button.signIn">Sign In</button>
+
+          <div class="demo-creds">
+            <div style="margin-bottom:0.4rem;"><strong data-i18n="login.demo.title">Demo Accounts:</strong></div>
+            <div>👤 <span data-i18n="login.demo.admin">Admin</span>: <code>admin</code> / <code>admin</code></div>
+            <div>🚚 <span data-i18n="login.demo.driver">Driver</span>:&nbsp;&nbsp; <code>driver</code> / <code>driver</code></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script>
+    // Apply locale to <html lang> and <title> + translate all [data-i18n] nodes
+    TOMS.applyDocumentLocale('login.pageTitle');
+    TOMS.applyTranslations();
+
+    // Mark active lang button + wire up switching
+    const cur = TOMS.getLocale();
+    document.querySelectorAll('.lang-switcher .lang-btn').forEach(btn => {
+      if (btn.dataset.lang === cur) btn.classList.add('active');
+      btn.addEventListener('click', () => {
+        if (btn.dataset.lang !== TOMS.getLocale()) TOMS.setLocale(btn.dataset.lang);
+      });
+    });
+
+    // If already logged in, jump straight to dashboard
+    if (localStorage.getItem('toms_user')) {
+      window.location.href = 'dashboard.html';
+    }
+
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+      }
+      const u = document.getElementById('username').value.trim().toLowerCase();
+      const p = document.getElementById('password').value;
+      let user;
+      if (u === 'admin' && p === 'admin') {
+        user = { name: 'Admin User', role: 'admin', username: 'admin' };
+      } else if (u === 'driver' && p === 'driver') {
+        user = { name: 'James Carter', role: 'driver', username: 'driver', driverId: 'D001' };
+      } else {
+        user = { name: u.charAt(0).toUpperCase() + u.slice(1), role: 'admin', username: u };
+      }
+      localStorage.setItem('toms_user', JSON.stringify(user));
+      window.location.href = 'dashboard.html';
+    });
+  </script>
+</body>
+</html>

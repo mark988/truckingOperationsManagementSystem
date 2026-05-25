@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 *)",
+      "Bash(curl -sf http://localhost:8765/ -o /dev/null)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://localhost:8765/__TRACKED_VAR__)",
+      "Bash(open *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}  assets/js/i18n.js\\\\n\" http://localhost:8765/assets/js/i18n.js)",
+      "Bash(curl -s \"http://localhost:8765/assets/js/i18n.js\")",
+      "Bash(node *)"
+    ]
+  }
+}
